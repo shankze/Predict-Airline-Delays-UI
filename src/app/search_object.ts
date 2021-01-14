@@ -1,0 +1,43 @@
+import { Time } from '@angular/common';
+import { MergeMapSubscriber } from 'rxjs/internal/operators/mergeMap';
+
+export interface SearchCriteria {
+    o_times?: string[];
+    d_times?:string[];
+    airline?:string[];
+    flight_nums?:string[];
+    price?:number[];
+    sc_flight_search_criteria: string;
+    sc_airline?:string;
+    sc_departure_time?:string;
+    i_travelDate: Date;
+    i_distance: number;
+    i_origin: string;
+    i_destination: string;
+    o_wind: number;
+    o_precipitation: number; 
+    o_snow: number;  
+    o_snowDepth: number; 
+    o_temperature: number;  
+    o_fog: boolean;
+    o_thunder: boolean; 
+    o_ice: boolean; 
+    o_hail: boolean;  
+    o_glaze: boolean;  
+    o_smoke: boolean; 
+    o_driftSnow: boolean;
+    d_wind: number;
+    d_precipitation: number; 
+    d_snow: number;  
+    d_snowDepth: number; 
+    d_temperature: number;    
+    d_fog: boolean;  
+    d_thunder: boolean;  
+    d_ice: boolean;  
+    d_hail: boolean;  
+    d_glaze: boolean; 
+    d_smoke: boolean;  
+    d_driftSnow: boolean;
+    i_airline?: string;
+    delay_probability: number;
+}

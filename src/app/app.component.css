@@ -1,0 +1,28 @@
+.jumbotron{
+    height: 12vh;
+    padding: 1rem;
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
+
+.search_results {
+    margin-top: 10px;
+}
+
+.mat-card {
+    margin-top: 12px;
+}
+
+.display-header {
+    font-weight: bold;
+}
+
+.mat-radio-button{
+    margin-left: 10px;
+}
+
+.flight-search-rb{
+    margin-top: 16px;
+}

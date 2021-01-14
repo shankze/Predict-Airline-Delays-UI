@@ -1,0 +1,183 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="container">
+  <div class="jumbotron">
+    <h1>Airline Mart</h1>
+    <p>One-stop flight booking portal</p>
+  </div>
+  <form class="example-form">
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="col-3">
+        <mat-form-field class="example-full-width">
+          <input type="text" placeholder="From" 
+            aria-label="Number" matInput [formControl]="ori_Control" [matAutocomplete]="auto"/>
+          <mat-autocomplete (optionSelected)='updateOrigin($event.option.value)' #auto="matAutocomplete">
+            <mat-option *ngFor="let option of ori_FilteredOptions | async" [value]="option">{{ option }} </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="col-3">
+        <mat-form-field class="example-full-width">
+          <input type="text" placeholder="To" aria-label="Number" matInput [formControl]="des_Control" [matAutocomplete]="auto_des"/>
+          <mat-autocomplete (optionSelected)='updateDestination($event.option.value)' #auto_des="matAutocomplete">
+            <mat-option *ngFor="let option of des_FilteredOptions | async" [value]="option"> {{ option }} </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="col-3">
+        <mat-form-field appearance="fill">
+          <mat-label>Choose a date</mat-label>
+            <input matInput [(ngModel)]="i_travelDate" name='travelDate' #travelDate [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker [startAt]="i_travelDate"></mat-datepicker>
+      </mat-form-field></div>
+      <!--<div class="col-3"><mat-form-field appearance="fill">
+        <mat-label>Airline</mat-label>
+        <mat-select [(ngModel)]="i_airline" name='airline'>
+          <mat-option *ngFor="let airline of ailine_list" [value]="airline.value">
+            {{airline.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field></div>-->
+      <div class="col-2">
+        <button mat-raised-button color="primary" (click)="searchFlights(travelDate.value)">Search</button>
+      </div>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]='true'>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <!--<div class="row">-->
+            Flight Search Type
+            <!--</div>-->
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+          <div class="row">
+            <div  class="col-4">
+              <mat-radio-group  [(ngModel)]="sc_flight_search_criteria" name="sc_flight_search_criteria" aria-label="Select an option">
+                <mat-radio-button class="flight-search-rb" value="Random">Random</mat-radio-button>
+                <mat-radio-button class="flight-search-rb" value="Specific">Specific Flight</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-3">
+              <div *ngIf="sc_flight_search_criteria == 'Specific'">
+                <mat-form-field class="flight-search-dd" appearance="fill">
+                  <mat-label>Airline</mat-label>
+                  <mat-select [(ngModel)]="sc_airline" name='airline'>
+                    <mat-option *ngFor="let airline of ailine_list" [value]="airline.viewValue">{{airline.viewValue}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-3">
+              <div *ngIf="sc_flight_search_criteria == 'Specific'">
+                <mat-form-field class="flight-search-dd" appearance="fill">
+                  <mat-label>Departure Time</mat-label>
+                  <mat-select [(ngModel)]="sc_dep_time" name='i_dep_time'>
+                    <mat-option *ngFor="let dep_time of departure_time_list" [value]="dep_time">{{dep_time}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      <mat-expansion-panel [expanded]='false'>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <!--<div class="row">-->
+            Origin Weather
+            <!--</div>-->
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col-1">Precipitation: </div>
+          <div class="col-3"><mat-slider [(ngModel)]="o_precipitation" name="o_precipitation" thumbLabel  min="0" max="2000" step="1" value="0"></mat-slider></div>
+          <div class="col-2">Temperature:</div>
+          <div class="col-3"><mat-slider [(ngModel)]="o_temperature" name="o_temperature" thumbLabel min="-200" max="200" step="5" value="70"></mat-slider></div>
+          <div class="col-1">Wind:</div>
+          <div class="col-2"><mat-slider [(ngModel)]="o_wind" name="o_wind" thumbLabel min="0" max="140" step="1" value="0"></mat-slider></div>
+        </div>
+        <div class="row">
+          <div class="col-1">Snow:</div>
+          <div class="col-3"><mat-slider [(ngModel)]="o_snow" name="o_snow" thumbLabel min="0" max="200" step="5" value="0"></mat-slider></div>
+          <div class="col-2">Snow Depth:</div>
+          <div class="col-3"><mat-slider [(ngModel)]="o_snowDepth" name="o_snowDepth" thumbLabel min="0" max="500" step="5" value="0"></mat-slider></div>
+          <div class="col-3"><mat-slide-toggle [(ngModel)]="o_driftSnow" name="o_driftSnow">Drift Snow</mat-slide-toggle></div>
+        </div>
+        <div class="row">
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="o_fog" name="o_fog">Fog</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="o_thunder" name="o_thunder">Thunder</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="o_ice" name="o_ice">Ice</mat-slide-toggle> </div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="o_hail" name="o_hail">Hail</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="o_glaze" name="o_glaze">Glaze</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="o_smoke" name="o_smoke">Smoke</mat-slide-toggle></div>
+        </div>
+      </mat-expansion-panel>
+        <!--<mat-divider></mat-divider>-->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <!--<div class="row">-->
+          <mat-panel-title>
+            Destination Weather
+          <!--</div>-->
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col-1">Precipitation: </div>
+          <div class="col-3"><mat-slider [(ngModel)]="d_precipitation" name="d_precipitation" thumbLabel  min="0" max="2000" step="1" value="0"></mat-slider></div>
+          <div class="col-2">Temperature:</div>
+          <div class="col-3"><mat-slider [(ngModel)]="d_temperature" name="d_temperature" thumbLabel min="-200" max="200" step="5" value="70"></mat-slider></div>
+          <div class="col-1">Wind:</div>
+          <div class="col-2"><mat-slider [(ngModel)]="d_wind" name="d_wind" thumbLabel min="0" max="140" step="1" value="0"></mat-slider></div>
+        </div>
+        <div class="row">
+          <div class="col-1">Snow:</div>
+          <div class="col-3"><mat-slider [(ngModel)]="d_snow" name="d_snow" thumbLabel min="0" max="200" step="5" value="0"></mat-slider></div>
+          <div class="col-2">Snow Depth:</div>
+          <div class="col-3"><mat-slider [(ngModel)]="d_snowDepth" name="d_snowDepth" thumbLabel min="0" max="500" step="5" value="0"></mat-slider></div>
+          <div class="col-3"><mat-slide-toggle [(ngModel)]="d_driftSnow" name="d_driftSnow">Drift Snow</mat-slide-toggle></div>
+        </div>
+        <div class="row">
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="d_fog" name="d_fog">Fog</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="d_thunder" name="d_thunder">Thunder</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="d_ice" name="d_ice">Ice</mat-slide-toggle> </div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="d_hail" name="d_hail">Hail</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="d_glaze" name="d_glaze">Glaze</mat-slide-toggle></div>
+          <div class="col-2"><mat-slide-toggle [(ngModel)]="d_smoke" name="d_smoke">Smoke</mat-slide-toggle></div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </form>
+  <div class="search_results" *ngIf="search_results">  
+    <div class="row">
+      <div class="col-12">
+        <mat-card>
+          <div class="row display-header">
+            <div class="col-2">Airline</div>
+            <div class="col-2">Flight #</div>
+            <div class="col-1">Departure</div>
+            <div class="col-2">Arrival</div>
+            <!--<div class="col-2">Price</div>-->
+            <div class="col-2">Delay Probability</div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row" *ngFor="let result of search_results.flight_nums; let i=index">
+      <div class="col-12">
+        <mat-card>
+          <div class="row">
+            <div class="col-2">{{search_results.airline[i]}}</div>
+            <div class="col-2">{{search_results.flight_nums[i]}}</div>
+            <div class="col-1">{{search_results.o_times[i]}}</div>
+            <div class="col-2">{{search_results.d_times[i]}}</div>
+            <!--<div class="col-2">{{search_results.price[i] | currency:''}}</div>-->
+            <div class="col-2 display-header" 
+            [ngStyle]="{'color': (search_results.delay_probability[i] < 20) ? 'green' : (search_results.delay_probability[i] < 40) ? '#FAE218' : (search_results.delay_probability[i] < 60) ? 'orange' : 'red'}">
+            {{search_results.delay_probability[i] | number :'1.2-2'}}%</div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  <router-outlet></router-outlet>
+</div>
